@@ -1,3 +1,11 @@
+---
+title: "MomentJSで日付を簡単にフォーマットする"
+emoji: "⏰"
+type: "tech" # tech: 技術記事 / idea: アイデア
+topics: [javascript, typescript, momentjs]
+published: true
+---
+
 # 本日のお題
 
 **YYYY-MM-DD**のように、日付の表記のフォーマットを定める記法を見かけたことはありますでしょうか？
