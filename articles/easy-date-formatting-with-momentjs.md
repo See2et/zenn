@@ -6,6 +6,11 @@ topics: [javascript, typescript, momentjs]
 published: true
 ---
 
+# 注意
+
+今回紹介するライブラリは**すでに開発が終了**しています。
+後継ライブラリの[luxon](https://moment.github.io/luxon)の使用をご検討ください。
+
 # 本日のお題
 
 **YYYY-MM-DD**のように、日付の表記のフォーマットを定める記法を見かけたことはありますでしょうか？
