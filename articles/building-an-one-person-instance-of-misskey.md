@@ -49,91 +49,67 @@ Fediverseにおいてドメインは@example@example.comのようにユーザ名
 
 ## ssh接続と環境構築
 
-### ssh接続の準備
+以下の記事の`# 作業マシンのsshの準備`から`# VultrのIPv6アドレスを有効にする`を参考に進めました。
+[Misskeyのサーバを設置する](https://blog.noellabo.jp/entry/2019/08/14/8i3RHuZ1wJNDinIn)
 
-まずはあなたのコンピュータでssh鍵を作成しましょう！
+## Misskeyのインストール
 
+Misskeyのインストールには様々な方法がありますが、公式が用意している以下のシェルスクリプトが一番簡単かつ素早くできるかと思います。
+いくつかオプションがありますが、私はDocker Hubを利用する方法を選択しました。
 
-```$ ssh-keygen -t ed25519```
+[Misskey install shell script v3.0.0](https://misskey-hub.net/docs/install/bash.html)
 
+### 注意
 
-これで秘密鍵が`~/.ssh/id_ed25519`、公開鍵が`~/.ssh/id_ed25519.pub`に生成されました。
+実行する前に必ずCloudflareでドメインの設定を完了しましょう。
+深夜帯に作業していたため寝ぼけていた私はこれで一度やらかしました。
 
-次に`.ssh/config`を編集します。
+## CDNの設定
 
-```
-Host misskey
-    User <お好きな名前をば。今回はsee2etで進めていきます。>
-    Port 22
-    Hostname <VPSのIPアドレス>
-    IdentityFile ~/.ssh/id_ed25519
-```
+CDNを利用することで静的なコンテンツをキャッシュしサーバーの負荷を抑えることができます。
+ただしMisskeyのAPIをキャッシュしてはいけないので、`/api/*`をキャッシュしないようにしましょう。
+Cloudflareを利用している場合、Cache Rulesにて設定できます。
 
-### sshでサーバに接続
+[CDNの設定 | Misskey Hub](https://misskey-hub.net/docs/admin/cdn.html)
 
-以下の内容を実行してVPSサーバにアクセスします。
+## オブジェクトストレージの設定
 
-```$ ssh root@misskey -p 22```
+以下の記事を参考に進めました。
+[misskeyのオブジェクトストレージにcloudflare r2を利用する](https://qiita.com/hihumikan/items/1f692f3bd5516820e0ec)
 
-rootのパスを確認されるので、VPSに記載されているものをコピペしましょう。
+### 注意
 
-もし`WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!`と怒られてしまったら、以下の記事を参考にすると良いかもしれません。
-[「SSHホスト鍵が変わってるよ！」と怒られたときの対処](https://qiita.com/hnw/items/0eeee62ce403b8d6a23c)
+Misskeyの`コントロールパネル/設定/全般`から`リモートのファイルをキャッシュする`をオフにすることをお勧めしておきます。
+オフにしない場合、大量のファイルがオブジェクトストレージに保存され無料枠を圧迫する要因となってしまいます。
 
-### 新規ユーザの作成
+## off-topic
 
-どうやらrootでssh接続するのはよろしくないみたいなので、作業用のユーザを作成します。
+ここまで完了していれば、Misskeyインスタンスとしての利用ができると思います。
+より楽しいMisskeyライフを送るために参考になりそうなことを記載しておきます。
 
-```$ adduser see2et```
+### カスタム絵文字を外部インスタンスからインポート
 
-該当ユーザでsudoを扱えるようにします。
+Misskeyのサイドバーから`もっと！/情報/サーバー情報/カスタム絵文字/カスタム絵文字の管理/リモート`と進むと、あなたのインスタンスに表示された外部インスタンスのカスタム絵文字一覧が表示されます。
+好きなものをクリックしインポートボタンを押せば、あなたのインスタンスですぐに同じ絵文字を利用することができます！
 
-```$ usermod -aG sudo see2et```
+### リレーの追加
 
-### 公開鍵・秘密鍵利用のセットアップ
+インスタンスを作成しただけだとあなたのインスタンスはこのFediverseの宇宙でまだひとりぼっちです。
+`コントロールパネル/リレー`からお好きなリレーサーバーを追加して、さまざまなインスタンスと繋がりましょう。
+以下のページにFediverseのリレーサーバーがまとめられているので、参考にしてみてもいいでしょう。
 
-公開鍵・秘密鍵を利用してssh接続できるようにします。
-ファイル編集にviを利用していますが、適宜nanoなどを使用しても構いません。
+[Fediverseリレーサーバー一覧2023（for Mastodon / Misskey / Pleroma）
+2022/06/07](https://hisubway.online/blog/fediverse_relay/)
 
-```
-$ sudo -iu see2et
-$ mkdir .ssh
-$ chmod 700 .ssh
-$ cd .ssh
-$ touch authorized_keys
-$ chmod 600 authorized_keys
-$ vi authorized_keys
-```
+### デフォルトテーマのカスタマイズ
 
-authorized_keysに、以下のコマンドを**ssh接続元のコンピュータ**で実行して確認できた公開鍵をコピペします。
+初期状態のテーマはMisskey.ioなどでお馴染みのものですが、せっかくであればあなた好みの色にカスタマイズするのも良いかもしれません。
+`コントロールパネル/ブランディング/`でサーバーデフォルトのテーマをいじることができます。
+私は`設定/テーマ/テーマの管理`からMi U0 Light/Darkのテーマコードをコピーして利用しています。
 
-```
-$ cat .ssh/id_ed25519.pub 
-ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIP6n+UaBX1typlu2xQAlmrISPMyIB7VO1MbuzUz0gpPL see2et@see2et-mbp.local
-```
+[テーマ | Misskey Hub](https://misskey-hub.net/docs/features/theme.html)
 
-次に、sshdの設定を変更します。
+## 最後に
 
-```$ sudo vi /etc/ssh/sshd_config```
-
-以下の設定を有効化しましょう。必要に応じて行頭の#を削除してください。
-
-- PermitRootLogin no
-- PasswordAuthentication no
-
-ここまでできたらsshdの設定をテストし、エラーがなければ有効化のためにsshdを再起動しましょう。
-
-```
-$ sudo sshd -t
-$ sudo systemctl restart sshd
-```
-
-### ファイアウォール
-
-utfを利用して特定のポートの接続だけを許可します。
-必ず`.ssh/config`に記述したものを利用しましょう。
-
-```
-$ sudo utf allow 22/tcp
-$ sudo utf enable
-```
+ここまで読んでいただきありがとうございました。
+Misskeyインスタンス構築の一助になれば幸いです！
