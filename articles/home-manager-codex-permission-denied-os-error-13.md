@@ -72,6 +72,11 @@ drwxr-xr-x 517 see2et see2et 356K Oct  1 04:53 ..
 
 ## 原因の正体
 `~/.codex`がreadonlyになっていた原因は、以下のようにcodexの設定ファイルを管理していたことにありました。この設定により、`home-manager switch`実行時に`~/.config/home-manager/codex`は`~/.codex`に自動で配置されます。
+:::details なぜ`~/.config/home-manager`にcodexの設定ファイルを配置するのか
+dotfilesをgitやchezmoiでホーム直下に直接配置してしまうと、その場では動きますが「どのファイルをどう管理しているか」が曖昧になってしまいます。home-managerを使うことで、Nix の設定ファイルに「どの dotfile をどこに置くか」をすべて宣言的に書けるようになります。
+
+これにより、Git で管理している自分の設定リポジトリを Nix 設定にひもづけておけば、別のマシンでも home-manager switch を叩くだけで同じ環境を一発で再現することが出来ます。そのため、直接 ~/.codex にファイルを置くのではなく、いったん ~/.config/home-manager/codex にソースをまとめ、Home Manager の home.file オプション経由でホームディレクトリに展開する方式を取っていました。
+:::
 ```nix:home.nix
 {config, pkgs}: {
     home.file = {
