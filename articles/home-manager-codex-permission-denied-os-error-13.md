@@ -7,9 +7,7 @@ published: false
 ---
 
 ## TL;DR
-Nixの[home-manager](https://github.com/nix-community/home-manager)を用いたパッケージ管理環境へ移行していたところ、codexが正常に動作しませんでした。
-
-ファイル群を`home.file`で配置すると、読み取り専用になることがあります。codex は`~/.codex`に書き込みを必要とするため`Error: Permission denied (os error 13)`が出ました。「必要なファイルだけを`home.file`で配置する」ことで対処しました。
+Nixの[home-manager](https://github.com/nix-community/home-manager)を用いたパッケージ管理環境へ移行していたところ、codexが正常に動作しませんでした。`.codex`を`home.file`で配置していたことにより、readonlyになっていたようです。codex は`~/.codex`に書き込みを必要とするため`Error: Permission denied (os error 13)`が出ました。「必要なファイルだけを`home.file`で配置する」ことで対処しました。
 
 ## 検証環境
 - Windows 11 Home
