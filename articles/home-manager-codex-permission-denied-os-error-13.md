@@ -3,7 +3,7 @@ title: "[home-manager] codexがError: Permission denied (os error 13)を吐く�
 emoji: "📦"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["nix", "codex"]
-published: false
+published: true
 ---
 
 ## TL;DR
