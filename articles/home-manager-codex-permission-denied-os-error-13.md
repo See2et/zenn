@@ -119,3 +119,6 @@ drwxr-xr-x see2et see2et 4.0 KB Wed Oct  1 16:48:41 2025  log
 drwxr-xr-x see2et see2et 4.0 KB Wed Oct  1 16:49:10 2025  sessions
 .rw-r--r-- see2et see2et  79 B  Wed Oct  1 16:48:42 2025  version.json
 ```
+
+## 最後に
+ここまでご一読下さり、ありがとうございました。良きhome-managerライフの一助となりましたら幸いです。
